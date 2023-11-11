@@ -1,119 +1,68 @@
 // main.js
 
-// Obtener pacientes del localStorage o inicializar un array vacío
-const pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
+document.addEventListener('DOMContentLoaded', function () {
+    // Función para mostrar el formulario
+    function mostrarFormulario(tipo) {
+        // Crear el elemento de formulario
+        const formulario = document.createElement('form');
+        formulario.id = 'formulario';
 
-// Contadores de turnos por especialista
-let contadorTurnosEspecialista1 = 1;
-let contadorTurnosEspecialista2 = 1;
-// Añade más contadores según la cantidad de especialistas que tengas
+        // Crear un elemento de entrada para el nombre
+        const inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.placeholder = 'Nombre';
+        inputNombre.id = 'nombre';
+        formulario.appendChild(inputNombre);
 
+         // Crear un elemento de entrada para el nombre
+         const inputApellido = document.createElement('input');
+         inputNombre.type = 'text';
+         inputNombre.placeholder = 'Apellido';
+         inputNombre.id = 'apellido';
+         formulario.appendChild(inputApellido);
+          // Crear un elemento de entrada para el nombre
+        const inputEdad = document.createElement('input');
+        inputNombre.type = 'num';
+        inputNombre.placeholder = 'edad';
+        inputNombre.id = 'edad';
+        formulario.appendChild(inputEdad);
+         // Crear un elemento de entrada para el nombre
+         const inputCelu = document.createElement('input');
+         inputNombre.type = 'num';
+         inputNombre.placeholder = 'Celular';
+         inputNombre.id = 'ceel';
+         formulario.appendChild(inputCelu);
 
+        // Crear un botón para enviar el formulario
+        const btnEnviar = document.createElement('button');
+        btnEnviar.type = 'button';
+        btnEnviar.innerText = 'Enviar';
+        btnEnviar.addEventListener('click', function () {
+            // Obtener el valor del nombre
+            const nombre = document.getElementById('nombre').value;
 
-fetch('datos.json')
-  .then(response => response.json())
-  .then(data => {
-    // Manejar los datos cargados, por ejemplo, inicializar el array de pacientes
-    // con los datos del JSON
-    pacientes.push(...data.pacientes);
+            // Hacer algo con el nombre (puedes agregar más lógica aquí)
+            alert(`Hola, ${nombre}! Gracias por registrarte como ${tipo}.`);
 
-    // Actualizar localStorage con los nuevos datos
-    localStorage.setItem('pacientes', JSON.stringify(pacientes));
-  })
-  .catch(error => console.error(error));
-
-function solicitarTurno() {
-    const nombre = document.getElementById('nombre').value;
-    const apellido = document.getElementById('apellido').value;
-    const especialista = document.getElementById('especialista').value;
-
-    // Verificar si el paciente ya está registrado
-    const pacienteExistente = pacientes.find(
-        paciente => paciente.nombre === nombre && paciente.apellido === apellido
-    );
-
-    if (pacienteExistente) {
-        mostrarNumeroTurno(pacienteExistente.numeroTurno);
-    } else {
-        // Si el paciente no está registrado, mostrar formulario adicional
-        mostrarFormularioRegistro(nombre, apellido, especialista);
-    }
-}
-
-function mostrarFormularioRegistro(nombre, apellido, especialista) {
-    // Obtener el contador correspondiente al especialista
-    let contadorTurnos;
-    switch (especialista) {
-        case 'especialista1':
-            contadorTurnos = contadorTurnosEspecialista1;
-            break;
-        case 'especialista2':
-            contadorTurnos = contadorTurnosEspecialista2;
-            break;
-        // Agrega más casos según la cantidad de especialistas que tengas
-        default:
-            // Default en caso de que el especialista no esté definido
-            contadorTurnos = 1;
-    }
-
-    if (contadorTurnos <= 10) {
-        Swal.fire({
-            title: 'Registro de Paciente',
-            html: `<p>Por favor, complete la siguiente información para registrarse:</p>
-                  <label for="edad">Edad:</label>
-                  <input type="number" id="edad" required>
-                  <label for="celular">Número de Celular:</label>
-                  <input type="tel" id="celular" required>`,
-            showCancelButton: true,
-            confirmButtonText: 'Registrarse',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                const edad = document.getElementById('edad').value;
-                const celular = document.getElementById('celular').value;
-
-                // Asignar número de turno secuencial
-                const numeroTurno = contadorTurnos;
-
-                // Incrementar el contador para el siguiente turno
-                switch (especialista) {
-                    case 'especialista1':
-                        contadorTurnosEspecialista1++;
-                        break;
-                    case 'especialista2':
-                        contadorTurnosEspecialista2++;
-                        break;
-                    // Agrega más casos según la cantidad de especialistas que tengas
-                    default:
-                        // Default en caso de que el especialista no esté definido
-                        contadorTurnos++;
-                }
-
-                // Guardar la información del nuevo paciente
-                const nuevoPaciente = { nombre, apellido, especialista, edad, celular, numeroTurno };
-                pacientes.push(nuevoPaciente);
-
-                // Guardar en localStorage
-                localStorage.setItem('pacientes', JSON.stringify(pacientes));
-
-                // Mostrar mensaje de éxito con el número de turno
-                mostrarNumeroTurno(numeroTurno);
-            }
+            // Ocultar el formulario después de procesar los datos
+            document.getElementById('formulario').style.display = 'none';
         });
-    } else {
-        Swal.fire({
-            title: 'Turnos Agotados',
-            text: `Lo sentimos, no hay turnos disponibles para el especialista seleccionado.`,
-            icon: 'warning',
-            confirmButtonText: 'Entendido'
-        });
-    }
-}
+        formulario.appendChild(btnEnviar);
 
-function mostrarNumeroTurno(numeroTurno) {
-    Swal.fire({
-        title: '¡Turno Solicitado!',
-        text: `Su número de turno es: ${numeroTurno}`,
-        icon: 'success',
-        confirmButtonText: 'Entendido'
+        // Agregar el formulario al cuerpo del documento
+        document.body.appendChild(formulario);
+    }
+
+    // Agregar eventos de clic a los botones
+    document.getElementById('bocli').addEventListener('click', function () {
+        mostrarFormulario('paciente');
     });
-}
+
+    document.getElementById('bocar').addEventListener('click', function () {
+        mostrarFormulario('cardiólogo');
+    });
+
+    document.getElementById('bora').addEventListener('click', function () {
+        mostrarFormulario('radiólogo');
+    });
+});

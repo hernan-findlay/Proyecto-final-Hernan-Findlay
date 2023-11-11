@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+   <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -11,35 +12,43 @@
 
     <header>
         
-        <h1 style="color: blue; text-align: center; text-decoration: underline;">Clinica Rodriguez & Flia</h1>
-        <p style="color:   blue; text-align: center;">Bienvenidos a la clinica mas prestijiosa de Argentina</p>
+        <h1 >Clinica Rodriguez & Flia</h1>
+        <p >Bienvenidos a la clinica mas prestijiosa de Argentina</p>
         
     </header>
 
     <main>
 
-        <main>
-            <h2>Solicitar Turno</h2>
-    
-            <form id="turnoForm">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" required>
-    
-                <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" required>
-    
-                <label for="especialista">Especialista:</label>
-                <select id="especialista" required>
-                    <option value="especialista1">Especialista 1</option>
-                    <option value="especialista2">Especialista 2</option>
-                    <!-- Agrega más opciones según tus necesidades -->
-                </select>
-    
-                <button type="button" onclick="solicitarTurno()">Solicitar Turno</button>
-            </form>
-        </main>
+        <div>
+            <img src="https://media.istockphoto.com/id/1437830105/pt/foto/cropped-shot-of-a-female-nurse-hold-her-senior-patients-hand-giving-support-doctor-helping-old.jpg?s=1024x1024&w=is&k=20&c=mgY7rLP4_shahey12Ii2vnX6A1j0pb8XKNVETHO9YUY=" alt="">
+            <div>
+                <h2>Clinico</h2>
+                <button id="bocli">Solicitar turno</button>
+            </div>
+            
+        </div>
+
+        <div>
+            <img src="https://media.istockphoto.com/id/1327445866/pt/foto/handsome-mature-male-doctor-workinh-while-holding-digital-tablet-looking-at-camera-in-the.jpg?s=1024x1024&w=is&k=20&c=ApSp6Q3Uja6v5IhVcFKJNpnKeEVORNvFv-8PzWlDdaI=" alt="">
+            <div>
+                <h2>Cardiologo</h2>
+                <button id="bocar">Solicitar turno</button>
+            </div>
+          
+        </div>
+
+        <div>
+            <img src="https://media.istockphoto.com/id/1496720417/pt/foto/high-five-for-being-such-a-brave-little-boy.jpg?s=1024x1024&w=is&k=20&c=JJp6jzgz0ngHcqBJJt96ld_X3mhCyGwqeNHx7FBZAHg=" alt="">
+            <div>
+                <h2>Rayos</h2>
+                <button id="bora">Solicitar turno</button>
+            </div>
+           
+        </div>
 
 
+       
+  
     </main>
 
 
