@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+    <header>
+        
+        <h1 style="color: blue; text-align: center; text-decoration: underline;">Clinica Rodriguez & Flia</h1>
+        <p style="color:   blue; text-align: center;">Bienvenidos a la clinica mas prestijiosa de Argentina</p>
+        
+    </header>
+
+    <main>
+
+        <main>
+            <h2>Solicitar Turno</h2>
+    
+            <form id="turnoForm">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" required>
+    
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" required>
+    
+                <label for="especialista">Especialista:</label>
+                <select id="especialista" required>
+                    <option value="especialista1">Especialista 1</option>
+                    <option value="especialista2">Especialista 2</option>
+                    <!-- Agrega más opciones según tus necesidades -->
+                </select>
+    
+                <button type="button" onclick="solicitarTurno()">Solicitar Turno</button>
+            </form>
+        </main>
+
+
+    </main>
+
+
+
+    <footer></footer>
+
+
+
+
+
+
+
+
+    <script src="main.js"></script>
+</body>
+</html>
