@@ -1,34 +1,49 @@
-
-
-
-
-*{
+/* Agrega estilos según tu preferencia */
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-header h1{
-    color: blue; text-align: center; text-decoration: underline;
+header {
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
 }
 
-header p{
-    color:   blue; text-align: center;
+main {
+    padding: 20px;
 }
 
-main{
+section {
     display: flex;
-    flex-direction: row;
-    
-}
-main img{
-    width: 70%;
-    display: flex;
-    
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
-main section{
-    display: flex;
-    justify-content:center;
+div {
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    text-align: center;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}

@@ -125,207 +125,122 @@
     }
 });
  */
+document.addEventListener('DOMContentLoaded', function () {
+    // Cargar datos desde el archivo JSON local
+    fetch('./especialistas.json')
+        .then(response => response.json())
+        .then(data => {
+            const especialistas = data;
+            generarEspecialistas(especialistas);
+        })
+        .catch(error => console.error('Error al cargar datos:', error));
 
-// main.js
+    function generarEspecialistas(especialistas) {
+        const main = document.getElementById('main');
+        const section = document.createElement('section');
 
-document.addEventListener("DOMContentLoaded", function () {
-    const inicioSesionBtn = document.getElementById("inicioSesion");
-    const registroBtn = document.getElementById("registro");
+        especialistas.forEach(especialista => {
+            const div = document.createElement('div');
+            const img = document.createElement('img');
+            const divInfo = document.createElement('div');
+            const h2 = document.createElement('h2');
+            const button = document.createElement('button');
 
-    inicioSesionBtn.addEventListener("click", function () {
-        const usuarioLogueado = /* Lógica para comprobar si el usuario está logueado */ false;
+            img.src = `./assets/img/${especialista.nombre.toLowerCase()}.jpg`;
+            img.alt = especialista.nombre;
+            h2.textContent = especialista.nombre;
+            button.id = `bot${especialista.nombre.toLowerCase()}`;
+            button.textContent = 'Reservar';
 
-        if (usuarioLogueado) {
-            // El usuario ya está logueado, puedes redirigir a otra página o mostrar un mensaje
-            Swal.fire('Ya has iniciado sesión', '', 'info');
-        } else {
-            // El usuario no está logueado, muestra el formulario de inicio de sesión
-            mostrarFormularioInicioSesion();
+            button.addEventListener('click', () => mostrarHorarios(especialista));
+
+            div.appendChild(img);
+            div.appendChild(divInfo);
+            divInfo.appendChild(h2);
+            divInfo.appendChild(button);
+
+            section.appendChild(div);
+        });
+
+        main.appendChild(section);
+    }
+
+    function mostrarHorarios(especialista) {
+        if (especialista.reservado) {
+            Swal.fire('Error', 'Ya ha realizado una reserva para este especialista.', 'error');
+            return;
         }
-    });
 
-    registroBtn.addEventListener("click", function () {
-        // Muestra el formulario de registro
-        mostrarFormularioRegistro();
-    });
+        const horariosOrdenados = especialista.horario.slice().sort((a, b) => parseInt(a) - parseInt(b));
 
-    // Nueva función para mostrar los especialistas
-    function mostrarEspecialistas() {
-        const especialistas = [
-            { nombre: "Clínico", turno: 0 },
-            { nombre: "Cardiólogo", turno: 0 },
-            { nombre: "Radiólogo", turno: 0 }
-        ];
-
-        // Crear y agregar cartas para cada especialista
-        especialistas.forEach((especialista, index) => {
-            const carta = document.createElement("div");
-            carta.classList.add("especialista-card");
-
-            const contenidoCarta = `
-                <h3>${especialista.nombre}</h3>
-                <p id="turno${index}">Turno: ${especialista.turno}</p>
-                <button id="seleccionarTurno${index}">Seleccionar Turno</button>
-            `;
-
-            carta.innerHTML = contenidoCarta;
-
-            // Agregar la carta al documento
-            document.getElementById("main").appendChild(carta);
-
-            // Agregar un evento al botón de cada especialista
-            document.getElementById(`seleccionarTurno${index}`).addEventListener("click", function () {
-                const nombrePaciente = obtenerNombrePaciente(); // Reemplaza esto con la lógica real para obtener el nombre del paciente
-                if (nombrePaciente) {
-                    asignarTurnoPaciente(especialista, nombrePaciente);
-                } else {
-                    Swal.fire('Error', 'Debes ingresar un nombre para asignar un turno', 'error');
-                }
-            });
-        });
-    }
-
-    function asignarTurnoPaciente(especialista, nombrePaciente) {
-        // Incrementar el turno automáticamente
-        especialista.turno++;
-        
-        // Actualizar el texto del turno en la interfaz
-        const turnoElement = document.getElementById(`turno${especialista.turno}`);
-        turnoElement.innerText = `Turno para ${nombrePaciente}: ${especialista.turno}`;
-
-        // Mostrar mensaje de éxito
-        Swal.fire(`Turno asignado para ${nombrePaciente} con ${especialista.nombre}: ${especialista.turno}`, '', 'success');
-    }
-
-    function mostrarFormularioInicioSesion() {
         Swal.fire({
-            title: 'Inicio de Sesión',
-            html:
-                '<input type="text" id="nombre" class="swal2-input" placeholder="Nombre">' +
-                '<input type="text" id="apellido" class="swal2-input" placeholder="Apellido">',
-            showCancelButton: true,
-            confirmButtonText: 'Iniciar Sesión',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                const nombre = Swal.getPopup().querySelector('#nombre').value;
-                const apellido = Swal.getPopup().querySelector('#apellido').value;
-
-                // Lógica para autenticar al usuario y asignar un turno
-                const usuarioAutenticado = autenticarUsuario(nombre, apellido);
-
-                if (usuarioAutenticado) {
-                    // Asignar turno al usuario
-                    asignarTurnoPaciente(usuarioAutenticado.especialista, nombre);
-                    Swal.fire('Inicio de sesión exitoso', `Turno asignado: ${usuarioAutenticado.turno}`, 'success');
-                } else {
-                    Swal.fire('Nombre o Apellido incorrectos', '', 'error');
-                }
-            }
-        });
-    }
-
-    function obtenerNombrePaciente() {
-        // Esta función debe ser remplazada con la lógica real para obtener el nombre del paciente al iniciar sesión.
-        // Puedes utilizar un campo de texto en el formulario o cualquier otro método de entrada.
-        return 'John Doe'; // Ejemplo, reemplaza esto con la lógica real
-    }
-
-    // Resto del código...
-
-    // Mostrar los especialistas al cargar la página
-    mostrarEspecialistas();
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* 
-document.addEventListener("DOMContentLoaded", function () {
-    // Función para mostrar el formulario de inicio de sesión
-    function mostrarFormularioInicioSesion() {
-        return Swal.fire({
-            title: 'Inicio de Sesión',
+            title: 'Ingrese su nombre y apellido',
             html:
                 '<input id="swal-input1" class="swal2-input" placeholder="Nombre">' +
                 '<input id="swal-input2" class="swal2-input" placeholder="Apellido">',
             focusConfirm: false,
             preConfirm: () => {
-                const nombre = Swal.getPopup().querySelector('#swal-input1').value;
-                const apellido = Swal.getPopup().querySelector('#swal-input2').value;
+                const nombre = document.getElementById('swal-input1').value;
+                const apellido = document.getElementById('swal-input2').value;
+
                 return { nombre, apellido };
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Reservar',
+            cancelButtonText: 'Cancelar',
+            input: 'select',
+            inputOptions: generarOpcionesHorarios(horariosOrdenados),
+            inputPlaceholder: 'Seleccionar horario',
+            inputValidator: (value) => {
+                return new Promise((resolve) => {
+                    if (value !== '') {
+                        resolve();
+                    } else {
+                        resolve('Debe seleccionar un horario');
+                    }
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { nombre, apellido } = result.value;
+
+                if (nombre && apellido) {
+                    const horarioSeleccionado = result.value;
+                    reservarCita(especialista, nombre, apellido, horarioSeleccionado);
+                } else {
+                    Swal.fire('Error', 'Debe ingresar nombre y apellido.', 'error');
+                }
             }
         });
     }
 
-    // Función para mostrar el formulario de registro
-    function mostrarFormularioRegistro() {
-        return Swal.fire({
-            title: 'Registro',
-            html:
-                '<input id="swal-input1" class="swal2-input" placeholder="Nombre">' +
-                '<input id="swal-input2" class="swal2-input" placeholder="Apellido">' +
-                '<input id="swal-input3" class="swal2-input" placeholder="Celular">' +
-                '<input id="swal-input4" class="swal2-input" placeholder="Dirección">',
-            focusConfirm: false,
-            preConfirm: () => {
-                const nombre = Swal.getPopup().querySelector('#swal-input1').value;
-                const apellido = Swal.getPopup().querySelector('#swal-input2').value;
-                const celular = Swal.getPopup().querySelector('#swal-input3').value;
-                const direccion = Swal.getPopup().querySelector('#swal-input4').value;
+    function generarOpcionesHorarios(horarios) {
+        const opciones = {};
 
-                // Guardar en el almacenamiento local
-                const pacientes = JSON.parse(localStorage.getItem('pacientes')) || {};
-                pacientes[nombre + apellido] = { nombre, apellido, celular, direccion };
-                localStorage.setItem('pacientes', JSON.stringify(pacientes));
-
-                return { nombre, apellido, celular, direccion };
-            }
+        horarios.forEach(horario => {
+            opciones[horario] = horario;
         });
+
+        return opciones;
     }
 
-    // Función para mostrar botones después de autenticar
-    function mostrarBotonesDespuesDeAutenticar() {
-        // Aquí puedes mostrar o habilitar los botones adicionales después de autenticar
-        console.log('Usuario autenticado');
+    function reservarCita(especialista, nombre, apellido, horarioSeleccionado) {
+        especialista.reservado = true;
+
+        const cita = {
+            nombre: `${nombre} ${apellido}`,
+            especialista: especialista.nombre,
+            horario: horarioSeleccionado
+        };
+
+        const citasGuardadas = JSON.parse(localStorage.getItem('citas')) || [];
+        citasGuardadas.push(cita);
+        localStorage.setItem('citas', JSON.stringify(citasGuardadas));
+
+        Swal.fire({
+            title: '¡Cita reservada!',
+            html: `Su cita con ${especialista.nombre} está programada para las ${horarioSeleccionado}.<br>Nombre: ${nombre} ${apellido}`,
+            icon: 'success'
+        });
     }
-
-    // Event listener para el botón de inicio de sesión
-    document.getElementById("inicioSesion").addEventListener("click", function () {
-        mostrarFormularioInicioSesion().then((result) => {
-            if (result.value) {
-                // ... (código existente)
-                mostrarBotonesDespuesDeAutenticar();
-            }
-        });
-    });
-
-    // Event listener para el botón de registro
-    document.getElementById("registro").addEventListener("click", function () {
-        mostrarFormularioRegistro().then((result) => {
-            if (result.value) {
-                // ... (código existente)
-                mostrarBotonesDespuesDeAutenticar();
-            }
-        });
-    });
-
-    // Otras funciones y lógica de tu aplicación pueden ir aquí
 });
-
- */
