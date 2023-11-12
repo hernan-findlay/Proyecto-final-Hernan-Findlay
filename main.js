@@ -1,130 +1,3 @@
-/* document.addEventListener("DOMContentLoaded", function () {
-    const formularioContainer = document.getElementById("formulario-container");
-
-    function mostrarFormulario(tipo) {
-        const formHTML = `
-            <form id="${tipo}-form">
-                <label for="${tipo}-nombre">Nombre:</label>
-                <input type="text" id="${tipo}-nombre" required>
-
-                <label for="${tipo}-apellido">Apellido:</label>
-                <input type="text" id="${tipo}-apellido" required>
-
-                ${tipo === 'registro' ? `
-                    <label for="${tipo}-celular">Celular:</label>
-                    <input type="text" id="${tipo}-celular" required>
-
-                    <label for="${tipo}-direccion">Dirección:</label>
-                    <input type="text" id="${tipo}-direccion" required>
-                ` : ''}
-                
-                <button type="submit">Enviar</button>
-            </form>
-        `;
-
-        formularioContainer.innerHTML = formHTML;
-
-        const formElement = document.getElementById(`${tipo}-form`);
-        formElement.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const nombre = document.getElementById(`${tipo}-nombre`).value;
-            const apellido = document.getElementById(`${tipo}-apellido`).value;
-
-            if (tipo === 'registro') {
-                const celular = document.getElementById(`${tipo}-celular`).value;
-                const direccion = document.getElementById(`${tipo}-direccion`).value;
-
-                // Verificar si el paciente ya existe antes de registrar
-                if (!existePaciente(nombre, apellido)) {
-                    // Registrar en el localStorage
-                    registrarPaciente(nombre, apellido, celular, direccion);
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Registro Exitoso',
-                        text: `¡Bienvenido, ${nombre} ${apellido}!`,
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de Registro',
-                        text: `El paciente ${nombre} ${apellido} ya está registrado.`,
-                    });
-                }
-            } else {
-                // Aquí puedes realizar acciones con la información de inicio de sesión
-                // Por ejemplo, verificar en el localStorage, base de datos, etc.
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Inicio de Sesión Exitoso',
-                    text: `¡Hola, ${nombre} ${apellido}!`,
-                });
-            }
-
-            // Limpiar el formulario después de procesar los datos
-            formElement.reset();
-        });
-    }
-
-    // Función para verificar si un paciente ya existe
-    function existePaciente(nombre, apellido) {
-        const pacientes = JSON.parse(localStorage.getItem('pacientes')) || {};
-        return pacientes.hasOwnProperty(nombre + ' ' + apellido);
-    }
-
-    // Función para registrar un paciente en el localStorage
-    function registrarPaciente(nombre, apellido, celular, direccion) {
-        const pacientes = JSON.parse(localStorage.getItem('pacientes')) || {};
-        pacientes[nombre + ' ' + apellido] = { nombre, apellido, celular, direccion };
-        localStorage.setItem('pacientes', JSON.stringify(pacientes));
-    }
-
-    document.getElementById("inicioSesion").addEventListener("click", function () {
-        mostrarFormulario('inicioSesion');
-    });
-
-    document.getElementById("registro").addEventListener("click", function () {
-        mostrarFormulario('registro');
-    });
-
-    document.getElementById("bocli").addEventListener("click", function () {
-        solicitarTurno('Clínico');
-    });
-
-    document.getElementById("bocar").addEventListener("click", function () {
-        solicitarTurno('Cardiologo');
-    });
-
-    document.getElementById("bora").addEventListener("click", function () {
-        solicitarTurno('Rayos');
-    });
-
-    function solicitarTurno(especialidad) {
-        const pacientes = JSON.parse(localStorage.getItem('pacientes')) || {};
-        const turnos = pacientes[especialidad] || [];
-
-        if (turnos.length < 10) {
-            const numeroTurno = turnos.length + 1;
-
-            // Puedes asociar el turno con el paciente aquí si es necesario
-            // Por ejemplo, podrías guardar el turno en el registro del paciente
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Turno Solicitado',
-                text: `Se ha asignado el turno número ${numeroTurno} para ${especialidad}.`
-            });
-        } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'No hay más turnos disponibles',
-                text: 'Lo sentimos, no hay más turnos disponibles para esta especialidad.'
-            });
-        }
-    }
-});
- */
 document.addEventListener('DOMContentLoaded', function () {
     // Cargar datos desde el archivo JSON local
     fetch('./especialistas.json')
@@ -171,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const horariosOrdenados = especialista.horario.slice().sort((a, b) => parseInt(a) - parseInt(b));
+        const horariosOrdenados = especialista.horario.slice().sort();
 
         Swal.fire({
             title: 'Ingrese su nombre y apellido',
@@ -183,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const nombre = document.getElementById('swal-input1').value;
                 const apellido = document.getElementById('swal-input2').value;
 
-                return { nombre, apellido };
+                return { nombre, apellido, horarios: horariosOrdenados };
             },
             showCancelButton: true,
             confirmButtonText: 'Reservar',
@@ -202,10 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                const { nombre, apellido } = result.value;
+                const { nombre, apellido, horarioSeleccionado } = result.value;
 
-                if (nombre && apellido) {
-                    const horarioSeleccionado = result.value;
+                if (nombre && apellido && horarioSeleccionado) {
                     reservarCita(especialista, nombre, apellido, horarioSeleccionado);
                 } else {
                     Swal.fire('Error', 'Debe ingresar nombre y apellido.', 'error');
@@ -217,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function generarOpcionesHorarios(horarios) {
         const opciones = {};
 
-        horarios.forEach(horario => {
-            opciones[horario] = horario;
+        horarios.forEach((horario, index) => {
+            opciones[horario] = `${index + 1}. ${horario}`;
         });
 
         return opciones;
