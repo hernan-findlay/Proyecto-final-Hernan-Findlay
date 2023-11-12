@@ -1,5 +1,5 @@
 
-@import url(https://unsplash.com/es);
+
 
 
 *{
@@ -27,7 +27,7 @@ main img{
     
 }
 
-main div h2{
+main section{
     display: flex;
     justify-content:center;
 }
