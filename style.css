@@ -1,49 +1,96 @@
-/* Agrega estilos según tu preferencia */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #a844448e;
 }
 
-header {
-    background-color: #3498db;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
+#main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+    
 }
-
-main {
-    padding: 20px;
+header h1{
+    background-color: #78c47c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+header p{
+    background-color: #78c47c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 section {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    gap: 20px;
 }
 
+
 div {
-    margin: 10px;
+    
+    background-color: #a0333336;
+    border-radius: 10px;
     padding: 20px;
-    border: 1px solid #ddd;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
+    width: 35%;
+    border-radius: 10px;
+}
+
+h2 {
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 button {
-    background-color: #3498db;
+    background-color: #4caf50;
     color: #fff;
-    border: none;
     padding: 10px 20px;
-    cursor: pointer;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #45a049;
+}
+
+form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button.swal2-confirm {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+button.swal2-cancel {
+    background-color: #ccc;
+    color: #333;
 }

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Cargar datos desde el archivo JSON local
+    
     fetch('./especialistas.json')
         .then(response => response.json())
         .then(data => {
@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
             generarEspecialistas(especialistas);
         })
         .catch(error => console.error('Error al cargar datos:', error));
+
+    const horariosPorEspecialista = {
+        "Clinico": ["10", "10:30", "11", "11:30", "12", "12:30", "13", "13:30", "14", "14:30", "15", "15:30", "16"],
+        "Cardiologo": ["16", "16:30", "17", "17:30", "18", "18:30", "19", "19:30", "20", "20:30", "21", "21:30", "22"],
+        "Rayos": ["20", "20:30", "21", "21:30", "22", "22:30", "23", "23:30", "24"]
+    };
 
     function generarEspecialistas(especialistas) {
         const main = document.getElementById('main');
@@ -19,13 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const h2 = document.createElement('h2');
             const button = document.createElement('button');
 
-            img.src = `./assets/img/${especialista.nombre.toLowerCase()}.jpg`;
+            img.src = `./assets.img/img/${especialista.nombre.toLowerCase()}.jpg`;
             img.alt = especialista.nombre;
             h2.textContent = especialista.nombre;
             button.id = `bot${especialista.nombre.toLowerCase()}`;
             button.textContent = 'Reservar';
 
-            button.addEventListener('click', () => mostrarHorarios(especialista));
+            button.addEventListener('click', () => mostrarFormulario(especialista));
 
             div.appendChild(img);
             div.appendChild(divInfo);
@@ -38,40 +44,38 @@ document.addEventListener('DOMContentLoaded', function () {
         main.appendChild(section);
     }
 
-    function mostrarHorarios(especialista) {
+    function mostrarFormulario(especialista) {
         if (especialista.reservado) {
             Swal.fire('Error', 'Ya ha realizado una reserva para este especialista.', 'error');
             return;
         }
 
-        const horariosOrdenados = especialista.horario.slice().sort();
+        const horariosOrdenados = horariosPorEspecialista[especialista.nombre].slice().sort();
+
+        const form = document.createElement('form');
+        form.innerHTML = `
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" name="apellido" required>
+            <label for="horario">Seleccionar horario:</label>
+            <select id="horario" name="horario" required>
+                ${generarOpcionesHorariosSelect(horariosOrdenados)}
+            </select>
+        `;
 
         Swal.fire({
             title: 'Ingrese su nombre y apellido',
-            html:
-                '<input id="swal-input1" class="swal2-input" placeholder="Nombre">' +
-                '<input id="swal-input2" class="swal2-input" placeholder="Apellido">',
-            focusConfirm: false,
-            preConfirm: () => {
-                const nombre = document.getElementById('swal-input1').value;
-                const apellido = document.getElementById('swal-input2').value;
-
-                return { nombre, apellido, horarios: horariosOrdenados };
-            },
+            html: form,
             showCancelButton: true,
             confirmButtonText: 'Reservar',
             cancelButtonText: 'Cancelar',
-            input: 'select',
-            inputOptions: generarOpcionesHorarios(horariosOrdenados),
-            inputPlaceholder: 'Seleccionar horario',
-            inputValidator: (value) => {
-                return new Promise((resolve) => {
-                    if (value !== '') {
-                        resolve();
-                    } else {
-                        resolve('Debe seleccionar un horario');
-                    }
-                });
+            preConfirm: () => {
+                const nombre = document.getElementById('nombre').value;
+                const apellido = document.getElementById('apellido').value;
+                const horarioSeleccionado = document.getElementById('horario').value;
+
+                return { nombre, apellido, horarioSeleccionado };
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -80,20 +84,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (nombre && apellido && horarioSeleccionado) {
                     reservarCita(especialista, nombre, apellido, horarioSeleccionado);
                 } else {
-                    Swal.fire('Error', 'Debe ingresar nombre y apellido.', 'error');
+                    Swal.fire('Error', 'Debe completar todos los campos.', 'error');
                 }
             }
         });
     }
 
-    function generarOpcionesHorarios(horarios) {
-        const opciones = {};
-
-        horarios.forEach((horario, index) => {
-            opciones[horario] = `${index + 1}. ${horario}`;
-        });
-
-        return opciones;
+    function generarOpcionesHorariosSelect(horarios) {
+        return horarios.map(horario => `<option value="${horario}">${horario}</option>`).join('');
     }
 
     function reservarCita(especialista, nombre, apellido, horarioSeleccionado) {
